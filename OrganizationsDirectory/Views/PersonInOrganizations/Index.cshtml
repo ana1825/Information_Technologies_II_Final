@@ -1,0 +1,69 @@
+﻿@using X.PagedList.Mvc.Core;
+@model X.PagedList.IPagedList<DAL.Entities.PersonInOrganization>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+@using (Html.BeginForm("Index", "PersonInOrganizations", FormMethod.Get))
+{
+    <p>
+        Find by name: @Html.TextBox("SearchString", ViewBag.CurrentFilter as string)
+        <input type="submit" value="Search" />
+    </p>
+}
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.First().Organization)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.First().Person)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.First().Person.Picture)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.First().Position)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Organization.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Person.FullName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Position.Position)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.PersonInOrganizationId">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.PersonInOrganizationId">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.PersonInOrganizationId">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+
+@Html.PagedListPager(Model, page => Url.Action("Index",
+    new { page, currentFilter = ViewBag.CurrentFilter }),
+    new X.PagedList.Web.Common.PagedListRenderOptionsBase
+    {
+        LiElementClasses = new string[] { "page-item" },
+        PageClasses = new string[] { "page-link" }
+    })
